@@ -1,0 +1,16 @@
+# Python
+.venv/
+**/__pycache__/
+*.pyc
+*.pyo
+
+# Local dev / verification artifacts
+.playwright-mcp/
+*.png
+.env
+.git/
+.gitignore
+
+# Docs/build not needed in the image
+*.md
+!README.md

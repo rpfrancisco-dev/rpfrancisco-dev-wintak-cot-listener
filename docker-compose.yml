@@ -1,0 +1,54 @@
+# TAK Device Monitor — container stack.
+#
+# The backend reads two files from the WinTAK host (the client cert and
+# statesaver.sqlite) and listens for WinTAK's UDP CoT, so those are bind-mounted
+# and the UDP port is published. Override any ${VAR} below via a sibling
+# `.env.docker` passed with `--env-file`, or edit the defaults here.
+#
+#   docker compose --env-file .env.docker up -d --build
+#   docker compose up -d --build          # uses the defaults below
+#   docker compose logs -f                # follow logs
+#   docker compose down                   # stop
+
+# Pin the Compose project name so Docker Desktop shows a single, stable group
+# matching the container name (instead of defaulting to the folder name).
+name: tak-device-monitor
+
+services:
+  takbridge:
+    build: .
+    image: tak-device-monitor
+    container_name: tak-device-monitor
+    restart: unless-stopped
+    ports:
+      - "8000:8000"        # dashboard  -> http://localhost:8000
+      - "6969:6969/udp"    # UDP CoT listener (WinTAK CoT Outputs)
+    environment:
+      DJANGO_SECRET_KEY: "${DJANGO_SECRET_KEY:-dev-only-change-me}"
+      DJANGO_DEBUG: "false"
+      # TAK server streaming endpoint (reached outbound via NAT).
+      TAK_WS_URL: "${TAK_WS_URL:-wss://10.4.1.42:8443/takproto/1}"
+      # Client cert: mounted at /certs (see volumes); set the filename here.
+      TAK_CLIENT_P12: "/certs/${TAK_P12_NAME:-client_39b0d9ef.p12}"
+      TAK_P12_PASSWORD: "${TAK_P12_PASSWORD:-atakatak}"
+      # Extra UDP CoT source. Host isn't local inside the container, so the
+      # listener binds all interfaces on the published port (see README caveat).
+      TAK_UDP_URL: "${TAK_UDP_URL:-udp://10.4.1.42:6969}"
+      # Plotted objects: WinTAK's statesaver, mounted read-only at /wintak.
+      TAK_STATESAVER_PATH: "/wintak/statesaver.sqlite"
+      TAK_OFFLINE_GRACE_SECONDS: "60"
+      # Marti API: the authoritative connected-client list. Defaults to the
+      # TAK_WS_URL host on https. Poll briskly so a client that just connected
+      # (e.g. a WebTAK tab) appears within a few seconds, not up to 15.
+      TAK_MARTI_URL: "${TAK_MARTI_URL:-https://10.4.1.42:8443}"
+      TAK_MARTI_POLL_SECONDS: "${TAK_MARTI_POLL_SECONDS:-8}"
+      # Routine plotted-object check: re-verify objects against the statesaver
+      # / stream / stale time. Missing objects are removed immediately;
+      # expired ones after this many consecutive misses.
+      TAK_OBJECT_CHECK_SECONDS: "${TAK_OBJECT_CHECK_SECONDS:-30}"
+      TAK_OBJECT_CHECK_MISSES: "${TAK_OBJECT_CHECK_MISSES:-3}"
+    volumes:
+      # WinTAK client certificate directory (read-only).
+      - "${TAK_CERT_DIR:-C:/Users/Ryan Francisco/AppData/Roaming/WinTAK/SslCerts}:/certs:ro"
+      # WinTAK Databases directory — statesaver.sqlite + its -wal/-shm (read-only).
+      - "${TAK_DB_DIR:-C:/Users/Ryan Francisco/AppData/Roaming/WinTAK/Databases}:/wintak:ro"

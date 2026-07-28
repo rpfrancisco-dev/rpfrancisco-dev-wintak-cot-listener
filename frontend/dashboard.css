@@ -1,0 +1,199 @@
+/* TAK Device Monitor — dark ops theme.
+   Tokens follow the validated reference palette (dark column). */
+:root {
+  color-scheme: dark;
+  --page: #0d0d0d;
+  --surface: #1a1a19;
+  --ink: #ffffff;
+  --ink-2: #c3c2b7;
+  --ink-muted: #898781;
+  --hairline: rgba(255, 255, 255, 0.10);
+  --grid: #2c2c2a;
+  --status-good: #0ca30c;
+  --status-warning: #fab219;
+  --status-critical: #d03b3b;
+  --font: system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: var(--font);
+  background: var(--page);
+  color: var(--ink);
+  min-height: 100vh;
+}
+
+/* --- top bar ----------------------------------------------------------- */
+.topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 14px 24px;
+  border-bottom: 1px solid var(--hairline);
+}
+.brand { display: flex; align-items: center; gap: 10px; }
+.brand-mark {
+  width: 10px; height: 10px;
+  background: var(--status-good);
+  border-radius: 2px;
+}
+.topbar h1 { font-size: 15px; font-weight: 600; letter-spacing: 0.02em; }
+
+.links { display: flex; gap: 8px; }
+.pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 4px 12px;
+  border: 1px solid var(--hairline);
+  border-radius: 999px;
+  font-size: 12px;
+  color: var(--ink-2);
+  background: var(--surface);
+}
+.pill-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--ink-muted); }
+.pill.ok .pill-dot { background: var(--status-good); }
+.pill.warn .pill-dot { background: var(--status-warning); }
+.pill.bad .pill-dot { background: var(--status-critical); }
+
+/* --- summary tiles ------------------------------------------------------ */
+main { padding: 20px 24px 40px; max-width: 1200px; margin: 0 auto; }
+
+.summary {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 12px;
+  margin-bottom: 20px;
+}
+.tile {
+  background: var(--surface);
+  border: 1px solid var(--hairline);
+  border-radius: 10px;
+  padding: 14px 16px;
+}
+.tile-label { font-size: 12px; color: var(--ink-muted); margin-bottom: 6px; }
+.tile-value { font-size: 30px; font-weight: 600; line-height: 1.1; }
+
+/* --- section headers ---------------------------------------------------- */
+.section-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin: 22px 2px 10px;
+}
+.section-head h2 {
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--ink-muted);
+}
+.check-note {
+  margin-left: auto;
+  margin-right: 14px;
+  font-size: 11px;
+  color: var(--ink-muted);
+  font-variant-numeric: tabular-nums;
+}
+.toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  color: var(--ink-2);
+  cursor: pointer;
+  user-select: none;
+}
+.toggle input { accent-color: var(--status-good); cursor: pointer; }
+
+#objects-panel.collapsed { display: none; }
+
+/* --- device table ------------------------------------------------------- */
+.panel {
+  background: var(--surface);
+  border: 1px solid var(--hairline);
+  border-radius: 10px;
+  overflow-x: auto;
+}
+table { width: 100%; border-collapse: collapse; font-size: 13px; }
+thead th {
+  text-align: left;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--ink-muted);
+  padding: 10px 12px;
+  border-bottom: 1px solid var(--grid);
+  white-space: nowrap;
+}
+tbody td {
+  padding: 10px 12px;
+  border-bottom: 1px solid var(--grid);
+  color: var(--ink-2);
+  white-space: nowrap;
+}
+tbody tr:last-child td { border-bottom: none; }
+tbody tr:hover td { background: rgba(255, 255, 255, 0.03); }
+
+td.c-callsign { color: var(--ink); font-weight: 600; }
+td.c-uid, td.c-type, td.c-ip, td.c-ping, td.c-mgrs, td.c-latlon {
+  font-variant-numeric: tabular-nums;
+}
+td.c-uid { color: var(--ink-muted); max-width: 140px; overflow: hidden; text-overflow: ellipsis; }
+td.c-device { max-width: 200px; overflow: hidden; text-overflow: ellipsis; }
+
+/* status = dot + text label, never color alone */
+.status {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 12px;
+  font-weight: 600;
+}
+.status .dot { width: 8px; height: 8px; border-radius: 50%; }
+.status.online .dot { background: var(--status-good); }
+.status.stale .dot { background: var(--status-warning); }
+.status.offline .dot { background: var(--status-critical); }
+.status.online { color: var(--status-good); }
+.status.stale { color: var(--status-warning); }
+.status.offline { color: var(--status-critical); }
+
+tr.is-offline td { opacity: 0.55; }
+
+.badge {
+  display: inline-block;
+  padding: 2px 8px;
+  border: 1px solid var(--hairline);
+  border-radius: 5px;
+  font-size: 11px;
+  color: var(--ink-2);
+}
+
+/* affiliation marker = colored dot + label (never color alone) */
+.affil {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 12px;
+  text-transform: capitalize;
+}
+.affil .dot { width: 8px; height: 8px; border-radius: 2px; }
+.affil-friendly .dot { background: var(--series-1, #3987e5); }
+.affil-hostile  .dot { background: var(--status-critical); }
+.affil-neutral  .dot { background: var(--status-good); }
+.affil-unknown  .dot { background: var(--status-warning); }
+.affil-other .dot, .affil-na .dot { background: var(--ink-muted); }
+
+td.c-kind { text-transform: capitalize; color: var(--ink); }
+td.c-remarks { max-width: 220px; overflow: hidden; text-overflow: ellipsis; color: var(--ink-muted); }
+td.c-geom { color: var(--ink-muted); }
+
+.empty {
+  padding: 40px 20px;
+  text-align: center;
+  color: var(--ink-muted);
+  font-size: 13px;
+}

@@ -1,0 +1,25 @@
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+*.egg-info/
+
+# Environment / secrets
+.env
+.env.*
+!.env.example
+!.env.docker.example
+*.p12
+*.pem
+*.key
+*.crt
+*.pfx
+
+# Django
+db.sqlite3
+*.log
+
+# Tooling artifacts
+.playwright-mcp/
+.vscode/

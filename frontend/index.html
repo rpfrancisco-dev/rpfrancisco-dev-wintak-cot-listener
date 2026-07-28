@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>TAK Device Monitor</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Crect width='16' height='16' rx='3' fill='%231a1a19'/%3E%3Ccircle cx='8' cy='8' r='4' fill='%230ca30c'/%3E%3C/svg%3E">
+<link rel="stylesheet" href="/static/dashboard.css?v=7">
+</head>
+<body>
+<header class="topbar">
+  <div class="brand">
+    <span class="brand-mark" aria-hidden="true"></span>
+    <h1>TAK Device Monitor</h1>
+  </div>
+  <div class="links">
+    <span id="tak-pill" class="pill" title="">
+      <span class="pill-dot" aria-hidden="true"></span>
+      <span id="tak-pill-text">TAK server</span>
+    </span>
+    <span id="udp-pill" class="pill" title="" hidden>
+      <span class="pill-dot" aria-hidden="true"></span>
+      <span id="udp-pill-text">UDP</span>
+    </span>
+    <span id="marti-pill" class="pill" title="TAK Server Marti API — authoritative client list" hidden>
+      <span class="pill-dot" aria-hidden="true"></span>
+      <span id="marti-pill-text">TAK API</span>
+    </span>
+    <span id="bridge-pill" class="pill" title="Dashboard ↔ backend WebSocket">
+      <span class="pill-dot" aria-hidden="true"></span>
+      <span id="bridge-pill-text">bridge</span>
+    </span>
+  </div>
+</header>
+
+<main>
+  <section class="summary" aria-label="Summary">
+    <div class="tile">
+      <div class="tile-label">Total devices</div>
+      <div class="tile-value" id="sum-total">0</div>
+    </div>
+    <div class="tile">
+      <div class="tile-label">Online</div>
+      <div class="tile-value" id="sum-online">0</div>
+    </div>
+    <div class="tile">
+      <div class="tile-label">Stale</div>
+      <div class="tile-value" id="sum-stale">0</div>
+    </div>
+    <div class="tile" title="Devices no longer on the TAK server (Disconnected or CoT lapsed) are removed automatically — running total since backend start.">
+      <div class="tile-label">Removed (offline)</div>
+      <div class="tile-value" id="sum-offline">0</div>
+    </div>
+    <div class="tile">
+      <div class="tile-label">Plotted objects</div>
+      <div class="tile-value" id="sum-objects">0</div>
+    </div>
+  </section>
+
+  <div class="section-head">
+    <h2>Connected devices</h2>
+  </div>
+  <section class="panel" aria-label="Connected devices">
+    <table>
+      <thead>
+        <tr>
+          <th>Status</th>
+          <th>Callsign</th>
+          <th>UID</th>
+          <th>Device</th>
+          <th>CoT type</th>
+          <th>MGRS</th>
+          <th>Lat / Lon</th>
+          <th>Protocol</th>
+          <th>IP address</th>
+          <th>Last ping</th>
+        </tr>
+      </thead>
+      <tbody id="device-rows"></tbody>
+    </table>
+    <div id="empty-state" class="empty" hidden>
+      No devices seen yet — waiting for CoT traffic from the TAK server.
+    </div>
+  </section>
+
+  <div class="section-head">
+    <h2>Plotted objects</h2>
+    <span id="objcheck-note" class="check-note" title="Routine check: every object is re-verified against the statesaver, live CoT traffic, and its stale time; objects that stay missing are pruned."></span>
+    <label class="toggle">
+      <input type="checkbox" id="objects-toggle" checked>
+      <span>Show</span>
+    </label>
+  </div>
+  <section class="panel" id="objects-panel" aria-label="Plotted objects">
+    <table>
+      <thead>
+        <tr>
+          <th>Check</th>
+          <th>Kind</th>
+          <th>Label</th>
+          <th>Affiliation</th>
+          <th>CoT type</th>
+          <th>Geometry</th>
+          <th>MGRS</th>
+          <th>Lat / Lon</th>
+          <th>Remarks</th>
+        </tr>
+      </thead>
+      <tbody id="object-rows"></tbody>
+    </table>
+    <div id="objects-empty" class="empty" hidden>
+      No plotted objects yet — markers and drawings placed in WinTAK appear here.
+    </div>
+  </section>
+</main>
+
+<script src="/static/app.js?v=7"></script>
+</body>
+</html>

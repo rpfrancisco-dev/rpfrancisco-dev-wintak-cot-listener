@@ -1,0 +1,7 @@
+Django>=5.0,<6
+channels>=4.1
+daphne>=4.1
+websockets>=12
+takproto>=2.0
+cryptography>=42
+mgrs>=1.4
