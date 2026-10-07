@@ -22,7 +22,6 @@ $checkUrl = "http://127.0.0.1:$Port"
 # The browser gets the friendlier localhost URL (it falls back to IPv4 itself).
 $url = "http://localhost:$Port"
 $venvPy = Join-Path $root ".venv\Scripts\python.exe"
-$daphne = Join-Path $root ".venv\Scripts\daphne.exe"
 
 function Test-Server {
     try {
@@ -70,4 +69,4 @@ if (Test-Server) {
 $env:CURL_CA_BUNDLE = ""
 Write-Host "Starting TAK Device Monitor at $url  (Ctrl+C to stop)" -ForegroundColor Green
 Set-Location (Join-Path $root "backend")
-& $daphne -b $BindHost -p $Port takbridge.asgi:application
+& $venvPy -m daphne -b $BindHost -p $Port takbridge.asgi:application
